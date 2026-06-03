@@ -2,6 +2,42 @@
 
 Turn a public Bilibili video into a reusable local knowledge asset with transcript evidence, visual keyframes, structured notes, searchable memory, and generation tools.
 
+## How to Run
+
+### 1. Set up environment variables
+
+Copy [`.env.example`](/Users/hanmingx/Documents/Bili%20Knowledge%20Asset/.env.example) to `.env` and fill in your Gemini key:
+
+```bash
+GOOGLE_API_KEY=
+GEMINI_TEXT_MODEL=gemini-2.5-flash
+GEMINI_VISION_MODEL=gemini-2.5-flash
+FRONTEND_ORIGIN=http://localhost:3000
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+
+### 2. Start the backend
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+### 3. Start the frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 4. Open the app
+
+Visit [http://localhost:3000](http://localhost:3000).
+
 ## Problem
 
 Watching a useful Bilibili video does not automatically produce something reusable. The source video may contain facts, arguments, procedures, visuals, and examples, but after the watch session those signals are hard to search, compare, and repurpose.
