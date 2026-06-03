@@ -35,7 +35,18 @@ def _is_valid_video(path: Path) -> bool:
     return result.returncode == 0 and bool(result.stdout.strip())
 
 
+def _existing_video(asset_dir: Path) -> Path | None:
+    for candidate in sorted(asset_dir.glob("video.*")):
+        if candidate.is_file() and _is_valid_video(candidate):
+            return candidate
+    return None
+
+
 def download_video(source_url: str, bvid: str, cid: int | None, asset_dir: Path) -> Path | None:
+    existing = _existing_video(asset_dir)
+    if existing is not None:
+        return existing
+
     mp4_path = asset_dir / "video.mp4"
     try:
         direct_url = resolve_playable_url(bvid, cid)
@@ -72,6 +83,33 @@ def download_video(source_url: str, bvid: str, cid: int | None, asset_dir: Path)
                 return candidate
     except Exception:
         return None
+    return None
+
+
+def extract_audio_track(video_path: Path, audio_path: Path) -> Path | None:
+    if shutil.which(settings.ffmpeg_bin) is None:
+        return None
+
+    command = [
+        settings.ffmpeg_bin,
+        "-y",
+        "-i",
+        str(video_path),
+        "-vn",
+        "-ac",
+        "1",
+        "-ar",
+        "16000",
+        "-c:a",
+        "pcm_s16le",
+        str(audio_path),
+    ]
+    try:
+        subprocess.run(command, capture_output=True, check=True)
+    except Exception:
+        return None
+    if audio_path.exists() and audio_path.stat().st_size > 0:
+        return audio_path
     return None
 
 

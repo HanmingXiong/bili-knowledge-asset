@@ -14,10 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="shell">
           <header className="topbar">
             <div>
-              <p className="eyebrow">Knowledge Workspace</p>
+              <p className="eyebrow">Visual Learning Workspace</p>
               <Link href="/" className="brand">
                 Bili Knowledge Asset
               </Link>
+              <p className="topbar-copy">Public Bilibili videos become reusable study assets with evidence, memory, and generation tools.</p>
             </div>
             <nav className="nav">
               <Link href="/">Home</Link>

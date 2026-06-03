@@ -37,13 +37,50 @@ export type GeneratedOutput = {
   created_at: string;
 };
 
+export type StructuredTimelineItem = {
+  timestamp?: number | null;
+  event: string;
+};
+
+export type StructuredKnowledge = {
+  summary: string;
+  facts: string[];
+  opinions: string[];
+  arguments: string[];
+  timeline: StructuredTimelineItem[];
+  concepts: string[];
+  causal_chains: string[];
+  visual_evidence: string[];
+};
+
+export type AssetSnippet = {
+  id: number;
+  source_type: string;
+  timestamp?: number | null;
+  text: string;
+  metadata_json: Record<string, unknown>;
+};
+
+export type AssetQueryResult = {
+  answer: string;
+  evidence: Array<{
+    source_type: string;
+    timestamp?: number | null;
+    text: string;
+    asset_id: number;
+  }>;
+  timestamps: number[];
+};
+
 export type AssetDetail = AssetSummary & {
   description?: string | null;
   tags: string[];
   transcript_status: string;
+  transcript_source?: string | null;
   transcript_chunks: TranscriptChunk[];
   keyframes: Keyframe[];
   generated_outputs: GeneratedOutput[];
-  structured_notes?: string | null;
+  structured_knowledge: StructuredKnowledge;
+  snippets: AssetSnippet[];
   visual_descriptions: Array<Record<string, unknown>>;
 };

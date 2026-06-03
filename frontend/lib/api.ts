@@ -1,4 +1,4 @@
-import type { AssetDetail, AssetSummary, GeneratedOutput } from "./types";
+import type { AssetDetail, AssetQueryResult, AssetSummary, GeneratedOutput } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
@@ -43,5 +43,29 @@ export function generateOutput(payload: {
   return apiFetch<{ output: GeneratedOutput }>("/api/generate", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export function queryAsset(assetId: number, question: string): Promise<AssetQueryResult> {
+  return apiFetch<AssetQueryResult>(`/api/assets/${assetId}/query`, {
+    method: "POST",
+    body: JSON.stringify({ question }),
+  });
+}
+
+export function queryAssets(assetIds: number[], question: string): Promise<AssetQueryResult> {
+  return apiFetch<AssetQueryResult>("/api/query", {
+    method: "POST",
+    body: JSON.stringify({ asset_ids: assetIds, question }),
+  });
+}
+
+export function retryAsset(
+  assetId: number,
+  stage: "transcript" | "keyframes" | "vision" | "notes" | "all",
+): Promise<{ asset: AssetDetail }> {
+  return apiFetch<{ asset: AssetDetail }>(`/api/assets/${assetId}/retry`, {
+    method: "POST",
+    body: JSON.stringify({ stage }),
   });
 }

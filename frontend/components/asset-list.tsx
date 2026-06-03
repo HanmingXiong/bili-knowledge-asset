@@ -13,26 +13,29 @@ export function AssetList({ assets }: { assets: AssetSummary[] }) {
     <div className="asset-list">
       {assets.map((asset) => (
         <article key={asset.id} className="asset-card">
-          <StatusBadge status={asset.status} />
-          <div>
+          <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
+            <StatusBadge status={asset.status} />
+            <div className="asset-card-id">#{asset.id}</div>
+          </div>
+          <div className="stack" style={{ gap: 8 }}>
             <h3>{asset.title || asset.bvid}</h3>
             <p className="muted">{asset.uploader || "Unknown uploader"}</p>
+            {asset.error_message ? <div className="asset-warning">{asset.error_message}</div> : null}
           </div>
-          <div className="meta-list">
-            <div className="meta-item">
+          <div className="asset-mini-stats">
+            <div className="mini-stat">
               <strong>BVID</strong>
               <div className="muted">{asset.bvid}</div>
             </div>
-            <div className="meta-item">
+            <div className="mini-stat">
               <strong>Duration</strong>
               <div className="muted">{formatTimestamp(asset.duration)}</div>
             </div>
-            <div className="meta-item">
+            <div className="mini-stat">
               <strong>Created</strong>
               <div className="muted">{formatDate(asset.created_at)}</div>
             </div>
           </div>
-          {asset.error_message ? <div className="muted">{asset.error_message}</div> : null}
           <div className="row">
             <Link href={`/assets/${asset.id}`} className="button secondary">
               Open Asset

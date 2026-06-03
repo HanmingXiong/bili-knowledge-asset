@@ -31,6 +31,7 @@ class Asset(Base):
         back_populates="asset", cascade="all, delete-orphan"
     )
     keyframes: Mapped[list["Keyframe"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+    snippets: Mapped[list["AssetSnippet"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
 
 
 class TranscriptChunk(Base):
@@ -66,3 +67,16 @@ class GeneratedOutput(Base):
     user_prompt: Mapped[str | None] = mapped_column(Text, nullable=True)
     content: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class AssetSnippet(Base):
+    __tablename__ = "asset_snippets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"), index=True)
+    source_type: Mapped[str] = mapped_column(Text)
+    timestamp: Mapped[float | None] = mapped_column(Float, nullable=True)
+    text: Mapped[str] = mapped_column(Text)
+    metadata_json: Mapped[str] = mapped_column(Text, default="{}")
+
+    asset: Mapped[Asset] = relationship(back_populates="snippets")

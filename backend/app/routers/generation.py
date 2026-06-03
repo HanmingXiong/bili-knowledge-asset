@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.schemas import GenerateRequest, GenerateResponse
-from app.services.extraction import generate_from_assets
+from app.schemas import AssetQueryResponse, GenerateRequest, GenerateResponse, MultiAssetQueryRequest
+from app.services.extraction import generate_from_assets, query_assets
 
 router = APIRouter()
 
@@ -19,3 +19,13 @@ def generate(payload: GenerateRequest, db: Session = Depends(get_db)) -> Generat
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Generation failed: {exc}") from exc
+
+
+@router.post("/query", response_model=AssetQueryResponse)
+def query_multiple_assets(payload: MultiAssetQueryRequest, db: Session = Depends(get_db)) -> AssetQueryResponse:
+    try:
+        return query_assets(payload.asset_ids, payload.question, db)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Multi-asset query failed: {exc}") from exc
